@@ -1,17 +1,6 @@
 import random
 
 
-def get_room(world, x=None, y=None):
-    if x is None:
-        x = world["player"]["position"][0]
-    if y is None:
-        y = world["player"]["position"][1]
-    i = y * world["width"] + x
-    if not world["map"][i]:
-        world["map"][i] = {}
-    return world["map"][i]
-
-
 def create_world(width=None, height=None):
     # Si la largeur n'est pas définie, on en choisit une au hasard
     if not width or width < 0:
