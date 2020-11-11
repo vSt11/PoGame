@@ -1,9 +1,8 @@
 import pygame
 
-from world import create_world
-from screen import create_screen, update_screen
-
 from constants import *
+from screen import create_screen, update_screen
+from world import create_world
 
 
 def main():
