@@ -67,31 +67,49 @@ def main():
                     
                     if player[0] < WORLD_WIDTH-1:
                         player = (player[0]+1, player[1])
-                        display_world(player, world, WORLD_WIDTH, WORLD_HEIGHT)
+                        index= get_index(player[0], player[1])
+                        print ("sol :", world[index], "\ninventaire :", inventaire)
 
                         
                 if event.key == pygame.K_LEFT :
                     if player[0] > 0:
                         player = (player[0]-1, player[1])
-                        display_world(player, world, WORLD_WIDTH, WORLD_HEIGHT)
+                        index= get_index(player[0], player[1])
+                        print ("sol :", world[index], "\ninventaire :", inventaire)
 
                         
                 if event.key == pygame.K_UP :
                     if player[1] > 0 :
                         player = (player[0], player[1]-1)
-                        display_world(player, world, WORLD_WIDTH, WORLD_HEIGHT)
+                        index= get_index(player[0], player[1])
+
+                        print ("sol :", world[index], "\ninventaire :", inventaire)
 
                         
                 if event.key == pygame.K_DOWN :
                     if player[1] < WORLD_HEIGHT-1:
                         player = (player[0], player[1]+1)
-                        display_world(player, world, WORLD_WIDTH, WORLD_HEIGHT)
+                        index= get_index(player[0], player[1])
+                        print ("sol :", world[index], "\ninventaire :", inventaire)
                         
                 if event.key == pygame.K_p :
+                    if not world[index]:
+                        print ("Il n'y a rien ici")
+                    else :
+                        print(f"Vous avez pris", {world[index][0]})
+                        transfer_item(world[index], inventaire, world[index][0])
+                        print("sol :", world[index], "\ninventaire :", inventaire)
                     case = get_index(player[0], player[1])
-                    print (case)
                     item = world[case]
-                    transfer_item(world, inventaire, item)
+                    transfer_item(world[index], inventaire, item)
+                    
+                if event.key == pygame.K_o :
+                    if not inventaire:
+                        print("Tu n'as rien dans ton inventaire")
+                    else:
+                        print (f"Tu as mis {inventaire[0]} au sol")
+                        transfer_item(inventaire, world[index], inventaire[0])
+                        print ("sol :", world[index], "inventaire :", inventaire)
                     
                 
                                 
