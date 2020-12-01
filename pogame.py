@@ -1,9 +1,10 @@
 import pygame
 from constants import *
 from screen import create_screen, update_screen
-from world import create_world, display_world, get_index
+from world import create_world, get_index
 import random as rd
 import pygame_menu
+import time
 
 pygame.init()
 pygame.font.init()
@@ -16,7 +17,10 @@ ZELDA5 = pygame.mixer.Sound('ZELDA 5.wav')
 ZELDA6 = pygame.mixer.Sound('ZELDA 6.wav')
 ZELDA7 = pygame.mixer.Sound('ZELDA 7.wav')
 ZELDA8 = pygame.mixer.Sound('ZELDA 8.wav')
-
+ZELDAFINAL = pygame.mixer.Sound('ZELDAFINAL.wav')
+DIE = pygame.mixer.Sound('die.wav')
+GAGNE = pygame.mixer.Sound('fan2.wav')
+MENU = pygame.mixer.Sound('MENU.wav')
 
 
 inventaire=[]
@@ -26,18 +30,66 @@ fenetre = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
 
 myfont = pygame.font.SysFont('Helvetic', 40)
 
-def set_difficulté (valeur, difficulté):
-    pass
 
+def son_facile(player) :
+    if player == (2,1) :
+        ZELDA1.play()
+    elif player== (3,1) :
+        ZELDA2.play()
+    elif(player) == (4,1) :
+        ZELDA3.play()
+    elif(player) == (4, 2) :
+        ZELDA4.play()
+    elif player==(4,3) :
+        ZELDA5.play()
+    elif player==(3,3) :
+        ZELDA6.play()
+    elif player==(3,4):
+        ZELDA7.play()
+    elif player==(3,5):
+        ZELDA8.play()
+    elif player==(4,5):
+        GAGNE.play()
+        return player
+
+def gagne(background, screen) :
+    font = pygame.font.Font(None, 80)
+    text = font.render("Gagné !!!!", 1, (255, 0, 255))
+    textpos = text.get_rect()
+    textpos.centerx = background.get_rect().centerx
+    textpos.centery = background.get_rect().centery
+    background.blit(text, textpos)
+
+    #Blitter le tout dans la fenêtre
+    screen.blit(background, (0, 0))
+    pygame.display.flip()
+    time.sleep(3)
+    menu()
+
+def perdu(background, screen) :
+    DIE.play()
+    font = pygame.font.Font(None, 22)
+    text = font.render("Perdu !", 1, (255, 0, 255))
+    textpos = text.get_rect()
+    textpos.centerx = background.get_rect().centerx
+    textpos.centery = background.get_rect().centery
+    background.blit(text, textpos)
+
+    #Blitter le tout dans la fenêtre
+    screen.blit(background, (0, 0))
+    pygame.display.flip()
+    time.sleep(3)
+    jouer()
+    
             
 def menu():
-    menu = pygame_menu.Menu(500, 500, 'Bienvenue sur ',
+    menu = pygame_menu.Menu(600, 500, 'Bienvenue sur mon jeu',
                            theme=pygame_menu.themes.THEME_BLUE)
     menu.height=500
     menu_width=500
 
-    menu.add_text_input('Pseudo :', default='Joueur 1')
-    menu.add_selector('Difficulté :', [('Difficile', 1), ('Normal', 2), ('Facile', 3)], onchange=set_difficulté)
+    menu.add_text_input('Pseudo :', default='Link')
+    menu.add_selector('Difficulté :', [('Difficile', 1), ('Normal', 2), ('Facile', 3)])
     menu.add_button('Jouer', jouer)
     menu.add_button('Quitter', pygame_menu.events.EXIT)
 
@@ -48,43 +100,29 @@ def jouer():
 
     world = create_world()
     
-    ZELDA1.play()
-    ZELDA2.play()
-    ZELDA3.play()
-    ZELDA4.play()
-    ZELDA5.play()
-    ZELDA6.play()
-    ZELDA7.play()
-    ZELDA8.play()
     # Création des surfaces de dessin
     screen, background = create_screen(world)
     # Création d'une horloge
     clock = pygame.time.Clock()
     # Coordonnées [x, y] du joueur
-    player = [rd.randint(0,WORLD_WIDTH), rd.randint(0,WORLD_HEIGHT)]
+    player = [2, 2]
     
     #Coordonnées des objets :
   
 
     # Les variables qui nous permettent de savoir si notre programme est en cours d'exécution ou s'il doit se terminer.
     alive = True
+    global running
     running = True
+    
+
 
     # On met à jour ce qu'on affiche sur l'écran, et on "pousse" l'aiguille de l'horloge d'un pas.
     update_screen(screen, background, world, player)
     clock.tick()
-    
+     
     # Affichage d'un texte
-    #font = pygame.font.Font(None, 18)
-    #text = font.render("Appuyez sur T pour prendre un objet et sur G pour le poser.", 1, (255, 0, 255))
-    #textpos = text.get_rect()
-    #textpos.centerx = background.get_rect().centerx
-    #textpos.centery = background.get_rect().centery
-    #background.blit(text, textpos)
-
-    # Blitter le tout dans la fenêtre
-    #screen.blit(background, (0, 0))
-    #pygame.display.flip()
+ 
 
     # Boucle "quasi" infinie, qui s'arrêtera si le joueur est mort, ou si l'arrêt du programme est demandé.
     while alive and running:
@@ -93,13 +131,16 @@ def jouer():
         # clavier, par exemple).
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
-                break
+                MENU.play()
+                menu()
             elif event.type == pygame.KEYDOWN:
                 
                 # Une touche du clavier a été pressée.
                 if event.key == pygame.K_q:
-                    running=False
+                    MENU.play()
+                    menu()
+                    
+                #if player != (0,0) or 
                     
             elif event.type == pygame.KEYUP:
                 
@@ -109,30 +150,51 @@ def jouer():
                     if player[0] < WORLD_WIDTH-1:
                         player = (player[0]+1, player[1])
                         index= get_index(player[0], player[1])
+                        print(player)
+                        son_facile(player)
+                        if player != (2,2) and player!=(2,1) and player!=(3,1) and player!=(4,1) and player!=(4,2) and player!=(4,3) and player!=(3,3) and player!=(3,4) and player!=(3,5) and player!=(4,5) :
+                            perdu(background, screen)
+                            player = (2,2)
                         
-
                         
                 if event.key == pygame.K_LEFT :
                     if player[0] > 0:
                         player = (player[0]-1, player[1])
                         index= get_index(player[0], player[1])
-
+                        print(player)
+                        son_facile(player)
+                        if player != (2,2) and player!=(2,1) and player!=(3,1) and player!=(4,1) and player!=(4,2) and player!=(4,3) and player!=(3,3) and player!=(3,4) and player!=(3,5) and player!=(4,5) :
+                            perdu(background, screen)
+                            player = (2,2)
                         
                 if event.key == pygame.K_UP :
                     if player[1] > 0 :
                         player = (player[0], player[1]-1)
                         index= get_index(player[0], player[1])
-
+                        print(player)
+                        son_facile(player)
+                        if player != (2,2) and player!=(2,1) and player!=(3,1) and player!=(4,1) and player!=(4,2) and player!=(4,3) and player!=(3,3) and player!=(3,4) and player!=(3,5) and player!=(4,5) :
+                            perdu(background, screen)
+                            player = (2,2)
 
                         
                 if event.key == pygame.K_DOWN :
                     if player[1] < WORLD_HEIGHT-1:
                         player = (player[0], player[1]+1)
                         index= get_index(player[0], player[1])
+                        print(player)
+                        son_facile(player)
+                        
+                        if player != (2,2) and player!=(2,1) and player!=(3,1) and player!=(4,1) and player!=(4,2) and player!=(4,3) and player!=(3,3) and player!=(3,4) and player!=(3,5) and player!=(4,5) :
+                            perdu(background, screen)
+                            player = (2,2)
                         
                                            
         # On met à jour ce qu'on affiche sur l'écran, et on "pousse" l'aiguille de l'horloge d'un pas.
         update_screen(screen, background, world, player)
+        if player == (4,5) :
+            gagne(background, screen)
+        time.sleep(0.1)
         
         clock.tick()
 pass

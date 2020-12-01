@@ -1,8 +1,8 @@
 # Quelques constantes qui nous seront utiles pour garder notre programme lisible ...
-WORLD_WIDTH = 8
-WORLD_HEIGHT = 8
-ROOM_SIZE = 54
-PLAYER_SIZE = 20
+WORLD_WIDTH = 5
+WORLD_HEIGHT = 6
+ROOM_SIZE = 100
+PLAYER_SIZE = 50
 
 
 ERREUR_OBJET_INVENTAIRE= "Vous n'avez pas cet objet dans votre inventaire!\n"

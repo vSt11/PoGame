@@ -9,12 +9,17 @@ def create_screen(world):
     board_width = WORLD_WIDTH * ROOM_SIZE
     board_height = WORLD_HEIGHT * ROOM_SIZE
     screen = pygame.display.set_mode((board_width, board_height))
-    pygame.display.set_caption("SciencesPo Game")
+    pygame.display.set_caption("Reconstitue la musique !")
 
     # Fill background
     background = pygame.Surface(screen.get_size())
     background = background.convert()
     background.fill((255, 255, 255))
+    
+    #blit layer
+    layer = pygame.image.load ('map.png')
+    layer = pygame.transform.scale(layer, (WORLD_WIDTH*ROOM_SIZE, WORLD_HEIGHT*ROOM_SIZE))
+    background.blit(layer, (0, 0, WORLD_HEIGHT*ROOM_SIZE, WORLD_WIDTH*ROOM_SIZE))
 
     for x in range(WORLD_WIDTH):
         for y in range(WORLD_HEIGHT):
