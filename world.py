@@ -12,7 +12,7 @@ def display_world(joueur, world, hauteur, largeur):
     print()
 
 def create_world():
-    available_items = ["lampe", "épée", "arc",  "monstre", "trou", "bombe", "champignon", "étoile"]
+    available_items = ["ZELDA1", "ZELDA2", "ZELDA3", "ZELDA4", "ZELDA5", "ZELDA6", "ZELDA7", "ZELDA8"]
     contenu = []
     world=[]
     for y in range(WORLD_HEIGHT):

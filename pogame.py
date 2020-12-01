@@ -3,19 +3,59 @@ from constants import *
 from screen import create_screen, update_screen
 from world import create_world, display_world, get_index
 import random as rd
+import pygame_menu
+
+pygame.init()
+pygame.font.init()
+pygame.mixer.init()
+ZELDA1 = pygame.mixer.Sound('ZELDA 1.wav')
+ZELDA2 = pygame.mixer.Sound('ZELDA 2.wav')
+ZELDA3 = pygame.mixer.Sound('ZELDA 3.wav')
+ZELDA4 = pygame.mixer.Sound('ZELDA 4.wav')
+ZELDA5 = pygame.mixer.Sound('ZELDA 5.wav')
+ZELDA6 = pygame.mixer.Sound('ZELDA 6.wav')
+ZELDA7 = pygame.mixer.Sound('ZELDA 7.wav')
+ZELDA8 = pygame.mixer.Sound('ZELDA 8.wav')
+
+
 
 inventaire=[]
+surface = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
 
-def transfer_item(source, target, item):
-    if item in source:
-        source.remove(item)
-        target.append(item)
-    return source, target
-    
+fenetre = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
 
-def main():
+myfont = pygame.font.SysFont('Helvetic', 40)
+
+def set_difficulté (valeur, difficulté):
+    pass
+
+            
+def menu():
+    menu = pygame_menu.Menu(500, 500, 'Bienvenue sur ',
+                           theme=pygame_menu.themes.THEME_BLUE)
+    menu.height=500
+    menu_width=500
+
+    menu.add_text_input('Pseudo :', default='Joueur 1')
+    menu.add_selector('Difficulté :', [('Difficile', 1), ('Normal', 2), ('Facile', 3)], onchange=set_difficulté)
+    menu.add_button('Jouer', jouer)
+    menu.add_button('Quitter', pygame_menu.events.EXIT)
+
+    menu.mainloop(surface)
+
+def jouer():
     # Création du "monde" tel que nous le définissons
+
     world = create_world()
+    
+    ZELDA1.play()
+    ZELDA2.play()
+    ZELDA3.play()
+    ZELDA4.play()
+    ZELDA5.play()
+    ZELDA6.play()
+    ZELDA7.play()
+    ZELDA8.play()
     # Création des surfaces de dessin
     screen, background = create_screen(world)
     # Création d'une horloge
@@ -54,12 +94,13 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                break
             elif event.type == pygame.KEYDOWN:
                 
                 # Une touche du clavier a été pressée.
                 if event.key == pygame.K_q:
-                    running = False
-                     
+                    running=False
+                    
             elif event.type == pygame.KEYUP:
                 
                 
@@ -68,14 +109,13 @@ def main():
                     if player[0] < WORLD_WIDTH-1:
                         player = (player[0]+1, player[1])
                         index= get_index(player[0], player[1])
-                        print ("sol :", world[index], "\ninventaire :", inventaire)
+                        
 
                         
                 if event.key == pygame.K_LEFT :
                     if player[0] > 0:
                         player = (player[0]-1, player[1])
                         index= get_index(player[0], player[1])
-                        print ("sol :", world[index], "\ninventaire :", inventaire)
 
                         
                 if event.key == pygame.K_UP :
@@ -83,46 +123,23 @@ def main():
                         player = (player[0], player[1]-1)
                         index= get_index(player[0], player[1])
 
-                        print ("sol :", world[index], "\ninventaire :", inventaire)
 
                         
                 if event.key == pygame.K_DOWN :
                     if player[1] < WORLD_HEIGHT-1:
                         player = (player[0], player[1]+1)
                         index= get_index(player[0], player[1])
-                        print ("sol :", world[index], "\ninventaire :", inventaire)
                         
-                if event.key == pygame.K_p :
-                    if not world[index]:
-                        print ("Il n'y a rien ici")
-                    else :
-                        print(f"Vous avez pris", {world[index][0]})
-                        transfer_item(world[index], inventaire, world[index][0])
-                        print("sol :", world[index], "\ninventaire :", inventaire)
-                    case = get_index(player[0], player[1])
-                    item = world[case]
-                    transfer_item(world[index], inventaire, item)
-                    
-                if event.key == pygame.K_o :
-                    if not inventaire:
-                        print("Tu n'as rien dans ton inventaire")
-                    else:
-                        print (f"Tu as mis {inventaire[0]} au sol")
-                        transfer_item(inventaire, world[index], inventaire[0])
-                        print ("sol :", world[index], "inventaire :", inventaire)
-                    
-                
-                                
+                                           
         # On met à jour ce qu'on affiche sur l'écran, et on "pousse" l'aiguille de l'horloge d'un pas.
         update_screen(screen, background, world, player)
         
         clock.tick()
+pass
+    
+        
+menu()
 
 
-if __name__ == "__main__":
-    try:
-        main()
-    finally:
-        pygame.quit()
 
 
